@@ -17,69 +17,55 @@ namespace AlgerianFoodAPI.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Dish>> GetAllAsync()
-        {
-            return await _context.Dishes.Include(d => d.Ingredients).ToListAsync();
-        }
+        public async Task<IEnumerable<Dish>> GetAllAsync() =>
+            await _context.Dishes.AsNoTracking().ToListAsync();
 
-        public async Task<Dish?> GetByIdAsync(Guid id)
-        {
-            return await _context.Dishes.Include(d => d.Ingredients)
-                                        .FirstOrDefaultAsync(d => d.Id == id);
-        }
+        public async Task<IEnumerable<Dish>> GetAllWithDetailsAsync() =>
+            await _context.Dishes.Include(d => d.Ingredients).AsNoTracking().ToListAsync();
 
-        public async Task<Dish?> GetRandomDishAsync()
-        {
-            return await _context.Dishes.Include(d => d.Ingredients)
-                                        .OrderBy(d => EF.Functions.Random())
-                                        .FirstOrDefaultAsync();
-        }
+        public async Task<Dish?> GetByIdAsync(Guid id) =>
+            await _context.Dishes.Include(d => d.Ingredients)
+                                 .AsNoTracking()
+                                 .FirstOrDefaultAsync(d => d.Id == id);
+
+        public async Task<Dish?> GetRandomDishAsync() =>
+            await _context.Dishes.Include(d => d.Ingredients)
+                                 .OrderBy(d => EF.Functions.Random())
+                                 .FirstOrDefaultAsync();
 
         public async Task<Dish> AddAsync(Dish dish)
         {
-            dish.Id = Guid.NewGuid(); 
-
-            foreach (var ingredient in dish.Ingredients)
-            {
-                ingredient.Id = 0; 
-            }
-
+            dish.Id = Guid.NewGuid(); // Ensure unique ID
             _context.Dishes.Add(dish);
             await _context.SaveChangesAsync();
             return dish;
         }
 
-
-        public async Task<Dish> UpdateAsync(Dish dish)
+        public async Task<bool> UpdateDishAsync(Guid id, string name, string origin, string recipe)
         {
-            var existingDish = await _context.Dishes
-                                             .Include(d => d.Ingredients)
-                                             .FirstOrDefaultAsync(d => d.Id == dish.Id);
-        
-            if (existingDish == null)
-                throw new KeyNotFoundException("Dish not found");
-        
-            _context.Entry(existingDish).CurrentValues.SetValues(dish);
-        
-            // ✅ Fix: Handle Ingredients separately
-            foreach (var ingredient in dish.Ingredients)
-            {
-                var existingIngredient = existingDish.Ingredients.FirstOrDefault(i => i.Id == ingredient.Id);
-        
-                if (existingIngredient != null)
-                {
-                    _context.Entry(existingIngredient).CurrentValues.SetValues(ingredient);
-                }
-                else
-                {
-                    existingDish.Ingredients.Add(ingredient);
-                }
-            }
-        
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null) return false;
+
+            dish.Name = name;
+            dish.Origin = origin;
+            dish.Recipe = recipe;
+
+            _context.Entry(dish).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return dish;
+            return true;
         }
 
+        public async Task<bool> UpdateDishImageAsync(Guid id, string imageUrl)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null) return false;
+
+            dish.ImageUrl = imageUrl;
+
+            _context.Entry(dish).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<bool> DeleteAsync(Guid id)
         {

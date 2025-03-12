@@ -8,10 +8,12 @@ namespace AlgerianFoodAPI.Repositories
     public interface IDishRepository
     {
         Task<IEnumerable<Dish>> GetAllAsync();
+        Task<IEnumerable<Dish>> GetAllWithDetailsAsync();
         Task<Dish?> GetByIdAsync(Guid id);
         Task<Dish?> GetRandomDishAsync();
         Task<Dish> AddAsync(Dish dish);
-        Task<Dish> UpdateAsync(Dish dish);
+        Task<bool> UpdateDishAsync(Guid id, string name, string origin, string recipe);
+        Task<bool> UpdateDishImageAsync(Guid id, string imageUrl);
         Task<bool> DeleteAsync(Guid id);
     }
 }

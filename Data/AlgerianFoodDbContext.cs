@@ -26,6 +26,5 @@ namespace AlgerianFoodAPI.Data
                 .HasForeignKey(i => i.DishId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-
     }
 }

@@ -22,6 +22,13 @@ namespace AlgerianFoodAPI.Controllers
             return Ok(dishes);
         }
 
+        [HttpGet("details")]
+        public async Task<ActionResult<IEnumerable<Dish>>> GetAllWithDetails()
+        {
+            var dishes = await _dishRepository.GetAllWithDetailsAsync();
+            return Ok(dishes);
+        }
+
         [HttpGet("random")]
         public async Task<ActionResult<Dish>> GetRandomDish()
         {
@@ -46,27 +53,27 @@ namespace AlgerianFoodAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newDish.Id }, newDish);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Dish dish)
+        [HttpPost("{id}/update")]
+        public async Task<IActionResult> UpdateDish(Guid id, [FromBody] Dish dish)
         {
             if (id != dish.Id) return BadRequest("ID mismatch");
 
-            try
-            {
-                var updatedDish = await _dishRepository.UpdateAsync(dish);
-                return Ok(updatedDish);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound($"Dish with ID {id} not found.");
-            }
+            var updated = await _dishRepository.UpdateDishAsync(id, dish.Name, dish.Origin, dish.Recipe);
+            return updated ? Ok("Dish updated") : NotFound($"Dish with ID {id} not found.");
         }
 
-        [HttpDelete("{id}")]
+        [HttpPost("{id}/image")]
+        public async Task<IActionResult> UpdateImage(Guid id, [FromBody] string imageUrl)
+        {
+            var updated = await _dishRepository.UpdateDishImageAsync(id, imageUrl);
+            return updated ? Ok("Image updated") : NotFound("Dish not found.");
+        }
+
+        [HttpPost("{id}/delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var deleted = await _dishRepository.DeleteAsync(id);
-            return deleted ? NoContent() : NotFound($"Dish with ID {id} not found.");
+            return deleted ? Ok("Dish deleted") : NotFound($"Dish with ID {id} not found.");
         }
     }
 }
