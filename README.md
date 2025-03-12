@@ -3,7 +3,7 @@
 > **An open-source REST API providing traditional Algerian dishes, ingredients, and recipes!**
 
 ## 🚀 Live API Endpoint
-🔗 [Algerian Food API on Railway](https://your-api.up.railway.app/api/dishes)  
+🔗 [Algerian Food API on Railway](https://algerianfoodapi-production.up.railway.app/api/dishes) 
 *(Replace with actual Railway deployment URL)*
 
 ---
