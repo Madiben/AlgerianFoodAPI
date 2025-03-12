@@ -1,0 +1,71 @@
+@AlgerianFoodAPI_HostAddress = http://localhost:5196
+
+### Get All Dishes
+GET {{AlgerianFoodAPI_HostAddress}}/api/dishes
+Accept: application/json
+
+### Get a Random Dish
+GET {{AlgerianFoodAPI_HostAddress}}/api/dishes/random
+Accept: application/json
+
+### Get Dish by ID (Replace with actual dish ID)
+GET {{AlgerianFoodAPI_HostAddress}}/api/dishes/e5c23a4b-4f32-4a3b-b68e-8a1d2dbb9b11
+Accept: application/json
+
+### Add a New Dish
+POST {{AlgerianFoodAPI_HostAddress}}/api/dishes
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Berkoukes",
+  "origin": "Algeria (South)",
+  "recipe": "Prepare Berkoukes pasta, cook in a thick sauce with meat and vegetables.",
+  "ingredients": [
+    {
+      "name": "Berkoukes Pasta",
+      "quantity": 250,
+      "unit": "g"
+    },
+    {
+      "name": "Lamb",
+      "quantity": 300,
+      "unit": "g"
+    },
+    {
+      "name": "Tomato Paste",
+      "quantity": 3,
+      "unit": "tbsp"
+    }
+  ],
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/71/Berkoukes.jpg"
+}
+
+### Update an Existing Dish (Replace ID)
+PUT {{AlgerianFoodAPI_HostAddress}}/api/dishes/e5c23a4b-4f32-4a3b-b68e-8a1d2dbb9b11
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": "e5c23a4b-4f32-4a3b-b68e-8a1d2dbb9b11",
+  "name": "Updated Chorba Frik",
+  "origin": "Algeria (North & East)",
+  "recipe": "Updated recipe: simmer meat, vegetables, and frik in broth for 45 minutes.",
+  "ingredients": [
+    {
+      "name": "Meat",
+      "quantity": 350,
+      "unit": "g"
+    },
+    {
+      "name": "Frik (Cracked Wheat)",
+      "quantity": 120,
+      "unit": "g"
+    }
+  ],
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Chorba_Frik.jpg/800px-Chorba_Frik.jpg"
+}
+
+### Delete a Dish (Replace with actual dish ID)
+DELETE {{AlgerianFoodAPI_HostAddress}}/api/dishes/e5c23a4b-4f32-4a3b-b68e-8a1d2dbb9b11
+Accept: application/json
